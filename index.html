@@ -1,0 +1,535 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0, shrink-to-fit=no">
+    <title>Majorka | Oversize Culture</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { touch-action: pan-x pan-y; }
+        body { touch-action: pan-y pinch-zoom; overscroll-behavior: none; }
+        img, button, a, div { touch-action: manipulation; }
+        
+        @keyframes floatLogo1 { 0%,100%{transform:translate(0,0) rotate(0deg);} 50%{transform:translate(70px,-100px) rotate(5deg);} }
+        @keyframes floatLogo2 { 0%,100%{transform:translate(0,0) rotate(0deg);} 50%{transform:translate(-80px,-70px) rotate(-6deg);} }
+        @keyframes floatLogo3 { 0%,100%{transform:translate(0,0) rotate(0deg);} 50%{transform:translate(60px,90px) rotate(7deg);} }
+        
+        .floating-logo { position: absolute; pointer-events: none; user-select: none; will-change: transform; opacity: 1; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.12)); }
+        .product-card { transition: all 0.4s cubic-bezier(0.2,0.9,0.4,1.1); background: white; }
+        .product-card:hover { transform: translateY(-8px); box-shadow: 0 20px 35px -12px rgba(0,0,0,0.15); }
+        .hero-bg-grid { background-color: #ffffff; background-image: linear-gradient(rgba(0,0,0,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.06) 1px, transparent 1px); background-size: 55px 55px; }
+        @media (min-width: 1280px) { .hero-bg-grid { background-size: 65px 65px; } }
+        
+        .container-responsive { width: 100%; max-width: 1280px; margin-left: auto; margin-right: auto; padding-left: 1.5rem; padding-right: 1.5rem; }
+        @media (max-width: 640px) { .container-responsive { padding-left: 1rem; padding-right: 1rem; } }
+        
+        .majorka-main-title { font-family: 'Montserrat', sans-serif; font-weight: 900; letter-spacing: -0.03em; line-height: 1; }
+        .form-input { border: 1px solid rgba(0,0,0,0.12); transition: all 0.2s; background: white; }
+        .form-input:focus { border-color: #000; outline: none; box-shadow: 0 0 0 3px rgba(0,0,0,0.05); }
+        .modal-window { animation: modalScale 0.35s cubic-bezier(0.2,0.9,0.3,1.1); }
+        @keyframes modalScale { 0% { transform: scale(0.92); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+        
+        .admin-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); z-index: 10000; display: flex; align-items: center; justify-content: center; }
+        .admin-panel { background: white; border-radius: 32px; max-width: 90vw; width: 550px; max-height: 85vh; overflow-y: auto; padding: 24px; }
+        .admin-product-card { background: #f5f5f5; border-radius: 16px; padding: 16px; margin-bottom: 12px; cursor: pointer; transition: all 0.2s; }
+        .admin-product-card:hover { background: #e5e5e5; transform: translateX(4px); }
+        
+        .photo-gallery { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 12px; margin-bottom: 12px; }
+        .photo-item { position: relative; width: 80px; height: 80px; border-radius: 12px; overflow: hidden; border: 2px solid #e5e5e5; background: #f5f5f5; }
+        .photo-item img { width: 100%; height: 100%; object-fit: cover; }
+        .photo-item .remove-photo { position: absolute; top: -8px; right: -8px; background: red; color: white; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-size: 14px; cursor: pointer; border: none; z-index: 10; }
+        .photo-upload-btn { background: #e5e5e5; border: 2px dashed #aaa; border-radius: 12px; width: 80px; height: 80px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; font-size: 24px; color: #666; }
+        .photo-upload-btn:hover { background: #ddd; border-color: #000; }
+        
+        @media (max-width: 640px) { .admin-panel { width: 95vw; padding: 20px; } .photo-item, .photo-upload-btn { width: 70px; height: 70px; } }
+    </style>
+</head>
+<body class="bg-white text-black overflow-x-hidden">
+    
+    <!-- HERO SECTION -->
+    <section id="hero" class="hero-bg-grid min-h-screen flex items-center justify-center relative overflow-hidden">
+        <img id="float1" src="https://i.ibb.co/CKLgTTkC/38-20260322235841.png" 
+             class="floating-logo w-32 md:w-48 lg:w-56 top-[10%] left-[2%] md:left-[5%] animate-[floatLogo1_28s_ease-in-out_infinite]">
+        <img id="float2" src="https://i.ibb.co/CKLgTTkC/38-20260322235841.png" 
+             class="floating-logo w-36 md:w-52 lg:w-60 top-[35%] right-[2%] md:right-[8%] animate-[floatLogo2_32s_ease-in-out_infinite]">
+        <img id="float3" src="https://i.ibb.co/CKLgTTkC/38-20260322235841.png" 
+             class="floating-logo w-40 md:w-56 lg:w-64 bottom-[15%] left-[3%] md:left-[12%] animate-[floatLogo3_30s_ease-in-out_infinite]">
+        <div class="absolute inset-0 bg-gradient-to-b from-transparent via-white/30 to-white/95 z-10 pointer-events-none"></div>
+        
+        <div class="relative z-20 text-center px-5 w-full">
+            <div class="mb-6 md:mb-8 flex justify-center">
+                <h1 id="majorka-title" class="majorka-main-title text-black inline-block" style="font-size: clamp(58px, 12vw, 130px);">Majorka</h1>
+            </div>
+            <button id="playButton" class="bg-black hover:bg-zinc-800 text-white font-bold tracking-wider transition-all duration-300 active:scale-95 shadow-lg" 
+                    style="padding: clamp(12px, 3vw, 20px) clamp(28px, 6vw, 48px); font-size: clamp(18px, 4vw, 26px); border-radius: 60px;">
+                PLAY MAJORKA
+            </button>
+        </div>
+        
+        <div class="absolute bottom-8 md:bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-50 z-20">
+            <div class="w-px h-8 md:h-10 bg-black animate-pulse"></div>
+            <span class="text-[9px] md:text-[11px] tracking-[3px] font-medium">SCROLL</span>
+        </div>
+    </section>
+    
+    <!-- PRODUCTS СЕКЦИЯ -->
+    <section id="products" class="py-16 md:py-24 bg-white">
+        <div class="container-responsive">
+            <div class="text-center mb-12 md:mb-20">
+                <div class="inline-flex items-center gap-2 md:gap-3 bg-black text-white text-xs md:text-sm font-semibold tracking-wider px-5 md:px-7 py-2 md:py-2.5 rounded-full">
+                    <span class="w-1.5 h-1.5 md:w-2 md:h-2 bg-emerald-400 rounded-full animate-pulse"></span>
+                    MAJORKA
+                </div>
+                <h2 class="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black mt-6 md:mt-8 tracking-tight break-words" style="font-family: 'Montserrat', sans-serif; font-weight: 900;">
+                    MAJORKA
+                </h2>
+            </div>
+            <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 lg:gap-10"></div>
+        </div>
+    </section>
+    
+    <!-- FOOTER -->
+    <footer class="bg-black text-white py-10 md:py-14 mt-4">
+        <div class="container-responsive text-center">
+            <p class="text-3xl md:text-5xl font-black tracking-tight mb-2" style="font-family: 'Montserrat', sans-serif;">Majorka 2026</p>
+            <div class="flex justify-center gap-5 md:gap-8 mt-4 md:mt-6 text-xs md:text-sm text-white/50 font-medium">
+                <span>oversize culture</span>
+                <span>•</span>
+                <span>since 2026</span>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- LIGHTBOX MODAL -->
+    <div id="lightbox" onclick="if(event.target.id==='lightbox') closeLightbox()" class="fixed inset-0 bg-black/95 hidden items-center justify-center z-[9999]">
+        <div onclick="event.stopPropagation()" class="relative max-w-5xl w-full px-4 md:px-6">
+            <button onclick="closeLightbox()" class="absolute -top-10 md:-top-12 right-2 md:right-4 text-white text-4xl md:text-5xl font-thin hover:scale-110 transition">×</button>
+            <img id="lightbox-image" class="w-full max-h-[85vh] object-contain rounded-xl" src="" alt="Preview">
+        </div>
+    </div>
+    
+    <!-- ORDER MODAL -->
+    <div id="order-modal" onclick="if(event.target.id==='order-modal') closeOrderModal()" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden items-center justify-center z-[9999] p-4">
+        <div onclick="event.stopPropagation()" class="modal-window bg-white rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden">
+            <div class="bg-black px-6 md:px-7 py-6 md:py-8 text-white">
+                <div class="flex justify-between items-start">
+                    <div class="text-3xl md:text-4xl font-black tracking-tighter" style="font-family: 'Montserrat', sans-serif;">MAJORKA</div>
+                    <button onclick="closeOrderModal()" class="text-2xl md:text-3xl leading-none hover:opacity-70 transition">✕</button>
+                </div>
+                <p id="modal-product-name" class="mt-4 md:mt-5 text-sm md:text-base font-medium opacity-90"></p>
+                <p id="modal-product-price" class="text-2xl md:text-3xl font-bold mt-1 tracking-tight"></p>
+            </div>
+            <div class="p-5 md:p-7">
+                <form id="order-form" onsubmit="handleFormSubmit(event)">
+                    <div class="space-y-4 md:space-y-5">
+                        <div><label class="block text-sm font-semibold mb-1.5">Полное имя</label><input type="text" id="name" required class="form-input w-full px-4 md:px-5 py-3 md:py-4 rounded-xl text-base"></div>
+                        <div class="grid grid-cols-2 gap-3 md:gap-4">
+                            <div><label class="block text-sm font-semibold mb-1.5">Город</label><input type="text" id="city" required class="form-input w-full px-4 md:px-5 py-3 md:py-4 rounded-xl text-base"></div>
+                            <div><label class="block text-sm font-semibold mb-1.5">Телефон</label><input type="tel" id="phone" required class="form-input w-full px-4 md:px-5 py-3 md:py-4 rounded-xl text-base"></div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-3 md:gap-4">
+                            <div><label class="block text-sm font-semibold mb-1.5">Telegram</label><input type="text" id="tg" placeholder="@username" required class="form-input w-full px-4 md:px-5 py-3 md:py-4 rounded-xl text-base"></div>
+                            <div><label class="block text-sm font-semibold mb-1.5">Размер</label><select id="size" required class="form-input w-full px-4 md:px-5 py-3 md:py-4 rounded-xl text-base bg-white"><option value="" disabled selected>Выберите размер</option><option value="S">S (46-48)</option><option value="M">M (48-50)</option><option value="L">L (52-54)</option><option value="XL">XL (54-56)</option><option value="XXL">XXL (58-60)</option></select></div>
+                        </div>
+                        <div><label class="block text-sm font-semibold mb-1.5">Комментарий</label><textarea id="comment" rows="2" class="form-input w-full px-4 md:px-5 py-2.5 md:py-3 rounded-xl text-base resize-none"></textarea></div>
+                    </div>
+                    <button type="submit" class="mt-6 md:mt-7 w-full bg-black hover:bg-zinc-800 text-white py-4 md:py-5 text-base md:text-lg font-bold rounded-xl transition-all shadow-md">ОФОРМИТЬ ЗАКАЗ</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- SUCCESS TOAST -->
+    <div id="success-toast" class="hidden fixed bottom-6 md:bottom-10 left-1/2 -translate-x-1/2 bg-black/90 backdrop-blur-md text-white px-5 md:px-7 py-3 md:py-4 rounded-2xl shadow-2xl flex items-center gap-3 md:gap-4 z-[10000]">
+        <span class="text-xl md:text-2xl">✓</span><div><p class="font-bold text-sm md:text-base">Заявка принята</p><p class="text-[11px] md:text-xs opacity-80">Скоро свяжемся</p></div>
+    </div>
+    
+    <script>
+        // Telegram Bot Config
+        const BOT_TOKEN = '8796453832:AAHl6CutTdoIpIUJZJ0MzBLzXo4kwZiWdKk';
+        const ADMIN_CHAT_ID = '8396445302';
+        const SECRET_PHONE = '99977771001000';
+        
+        // Товары по умолчанию (если в localStorage пусто)
+        const DEFAULT_PRODUCTS = [
+            { id: '1', name: 'Oversize футболка BLACK', price: 5700, color: 'BLACK', category: 'мужская / унисекс', images: ['https://picsum.photos/id/1015/800/1000'] },
+            { id: '2', name: 'Oversize футболка WHITE', price: 5800, color: 'WHITE', category: 'женская / oversize fit', images: ['https://picsum.photos/id/201/800/1000'] },
+            { id: '3', name: 'Oversize футболка CHARCOAL', price: 5700, color: 'CHARCOAL', category: 'мужская / графитовый', images: ['https://picsum.photos/id/160/800/1000'] }
+        ];
+        
+        let products = [];
+        
+        function loadProducts() {
+            const saved = localStorage.getItem('majorka_products');
+            if (saved && JSON.parse(saved).length > 0) {
+                products = JSON.parse(saved);
+            } else {
+                // Если нет товаров или пусто - загружаем товары по умолчанию
+                products = JSON.parse(JSON.stringify(DEFAULT_PRODUCTS));
+                saveProducts();
+            }
+            renderProducts();
+        }
+        
+        function saveProducts() {
+            localStorage.setItem('majorka_products', JSON.stringify(products));
+        }
+        
+        function renderProducts() {
+            const grid = document.getElementById('products-grid');
+            if (!grid) return;
+            
+            if (products.length === 0) {
+                grid.innerHTML = '<div class="col-span-full text-center py-20 text-gray-400">Нет товаров. Добавьте через админ-панель (телефон 99977771001000)</div>';
+                return;
+            }
+            
+            grid.innerHTML = products.map(p => `
+                <div class="product-card rounded-2xl overflow-hidden border border-black/10 shadow-sm hover:shadow-xl">
+                    <div class="relative bg-gray-50 overflow-hidden">
+                        <img onclick="openLightbox('${p.images[0]}')" src="${p.images[0]}" class="w-full aspect-square object-cover cursor-zoom-in transition-transform duration-500 hover:scale-105" alt="${p.name}">
+                        <div class="absolute top-4 right-4 bg-white/95 backdrop-blur-sm px-3 md:px-4 py-1 md:py-1.5 text-xs font-bold rounded-full shadow-sm">${p.color}</div>
+                    </div>
+                    <div class="p-5 md:p-6 lg:p-7">
+                        <h3 class="text-xl md:text-2xl font-bold tracking-tight">${p.name}</h3>
+                        <p class="text-xs md:text-sm text-black/50 mt-1">${p.category}</p>
+                        <div class="flex justify-between items-center mt-5 md:mt-6 gap-3">
+                            <div class="flex items-baseline gap-0.5">
+                                <span class="text-2xl md:text-3xl font-black">${p.price.toLocaleString()}</span>
+                                <span class="text-base md:text-lg font-medium">₽</span>
+                            </div>
+                            <button onclick="openOrderModal('${p.name}', ${p.price})" class="bg-black text-white px-6 md:px-7 py-3 md:py-3.5 rounded-xl text-sm md:text-base font-semibold hover:bg-zinc-800 transition-all shadow-md">ЗАКАЗАТЬ</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        async function sendOrderToTelegram(orderData) {
+            const text = `🖤 НОВЫЙ ЗАКАЗ MAJORKA 🖤\n\n` +
+                `📦 Товар: ${orderData.product}\n` +
+                `💰 Цена: ${orderData.price} ₽\n` +
+                `👤 Имя: ${orderData.name}\n` +
+                `🏙 Город: ${orderData.city}\n` +
+                `📞 Телефон: ${orderData.phone}\n` +
+                `📱 Telegram: ${orderData.tg}\n` +
+                `📏 Размер: ${orderData.size}\n` +
+                (orderData.comment ? `💬 Комментарий: ${orderData.comment}` : '');
+            
+            try {
+                await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ chat_id: ADMIN_CHAT_ID, text: text })
+                });
+            } catch(e) { console.error('TG Error:', e); }
+        }
+        
+        // ============= АДМИНКА =============
+        let currentImages = [];
+        
+        function showAdminPanel() {
+            const existing = document.getElementById('admin-panel-overlay');
+            if (existing) existing.remove();
+            
+            const panel = document.createElement('div');
+            panel.id = 'admin-panel-overlay';
+            panel.className = 'admin-overlay';
+            panel.innerHTML = `
+                <div class="admin-panel" onclick="event.stopPropagation()">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-2xl font-black" style="font-family:'Montserrat'">Админ-панель Majorka</h2>
+                        <button onclick="closeAdminPanel()" class="text-2xl font-bold hover:opacity-70">✕</button>
+                    </div>
+                    <div class="mb-6">
+                        <button onclick="showProductEditor(null)" class="bg-black text-white px-5 py-2 rounded-xl text-sm font-semibold">+ Добавить товар</button>
+                    </div>
+                    <div id="admin-products-list" class="max-h-[50vh] overflow-y-auto"></div>
+                    <div class="mt-4 text-xs text-gray-400 text-center">Управление товарами | Фото загружаются из галереи</div>
+                </div>
+            `;
+            document.body.appendChild(panel);
+            renderAdminProductList();
+        }
+        
+        function renderAdminProductList() {
+            const container = document.getElementById('admin-products-list');
+            if (!container) return;
+            if (products.length === 0) {
+                container.innerHTML = '<div class="text-center text-gray-500 py-8">Нет товаров. Добавьте первый!</div>';
+                return;
+            }
+            container.innerHTML = products.map(p => `
+                <div class="admin-product-card" onclick="showProductEditor('${p.id}')">
+                    <div class="flex gap-3">
+                        <img src="${p.images[0]}" class="w-16 h-16 object-cover rounded-lg">
+                        <div class="flex-1">
+                            <div class="font-bold">${escapeHtml(p.name)}</div>
+                            <div class="text-sm text-gray-600">${p.price.toLocaleString()} ₽ | ${p.color}</div>
+                            <div class="text-xs text-gray-400">${p.images.length} фото</div>
+                        </div>
+                        <button onclick="event.stopPropagation(); deleteProduct('${p.id}')" class="bg-red-500 text-white px-3 py-1 rounded-lg text-sm hover:bg-red-600">Удалить</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function escapeHtml(str) { 
+            if (!str) return '';
+            return str.replace(/[&<>]/g, function(m){
+                if(m==='&') return '&amp;';
+                if(m==='<') return '&lt;';
+                if(m==='>') return '&gt;';
+                return m;
+            });
+        }
+        
+        function showProductEditor(productId) {
+            const product = productId ? products.find(p => p.id === productId) : null;
+            currentImages = product ? [...product.images] : [];
+            
+            const existing = document.getElementById('product-editor');
+            if (existing) existing.remove();
+            
+            const editor = document.createElement('div');
+            editor.id = 'product-editor';
+            editor.className = 'admin-overlay';
+            editor.innerHTML = `
+                <div class="admin-panel" onclick="event.stopPropagation()" style="max-width: 600px;">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-xl font-black">${product ? 'Редактировать товар' : 'Новый товар'}</h3>
+                        <button onclick="closeProductEditor()" class="text-2xl hover:opacity-70">✕</button>
+                    </div>
+                    <div class="space-y-3">
+                        <div><label class="block text-sm font-semibold mb-1">Название</label><input type="text" id="edit-name" value="${product?.name || ''}" class="form-input w-full px-4 py-2 rounded-xl"></div>
+                        <div><label class="block text-sm font-semibold mb-1">Цена (₽)</label><input type="number" id="edit-price" value="${product?.price || ''}" class="form-input w-full px-4 py-2 rounded-xl"></div>
+                        <div><label class="block text-sm font-semibold mb-1">Цвет/метка</label><input type="text" id="edit-color" value="${product?.color || ''}" class="form-input w-full px-4 py-2 rounded-xl" placeholder="BLACK, WHITE..."></div>
+                        <div><label class="block text-sm font-semibold mb-1">Категория</label><input type="text" id="edit-category" value="${product?.category || ''}" class="form-input w-full px-4 py-2 rounded-xl" placeholder="мужская / унисекс"></div>
+                        <div><label class="block text-sm font-semibold mb-1">Фотографии (до 5 шт)</label>
+                            <div id="photo-gallery-container" class="photo-gallery"></div>
+                        </div>
+                        <button onclick="saveProductWithImages('${productId}')" class="w-full bg-black text-white py-3 rounded-xl font-semibold mt-4">${product ? 'Сохранить' : 'Создать'}</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(editor);
+            renderPhotoGallery();
+        }
+        
+        function renderPhotoGallery() {
+            const container = document.getElementById('photo-gallery-container');
+            if (!container) return;
+            
+            container.innerHTML = '';
+            
+            currentImages.forEach((img, idx) => {
+                const div = document.createElement('div');
+                div.className = 'photo-item';
+                div.innerHTML = `
+                    <img src="${img}" alt="photo">
+                    <button class="remove-photo" onclick="removePhoto(${idx})">×</button>
+                `;
+                container.appendChild(div);
+            });
+            
+            if (currentImages.length < 5) {
+                const uploadDiv = document.createElement('div');
+                uploadDiv.className = 'photo-upload-btn';
+                uploadDiv.innerHTML = '<span>+</span><span style="font-size:10px">фото</span>';
+                uploadDiv.onclick = () => triggerPhotoUpload();
+                container.appendChild(uploadDiv);
+            }
+        }
+        
+        function triggerPhotoUpload() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.onchange = (e) => {
+                const file = e.target.files[0];
+                if (file && currentImages.length < 5) {
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        currentImages.push(event.target.result);
+                        renderPhotoGallery();
+                    };
+                    reader.readAsDataURL(file);
+                } else if (currentImages.length >= 5) {
+                    alert('Максимум 5 фотографий');
+                }
+            };
+            input.click();
+        }
+        
+        function removePhoto(index) {
+            currentImages.splice(index, 1);
+            renderPhotoGallery();
+        }
+        
+        function saveProductWithImages(productId) {
+            const name = document.getElementById('edit-name')?.value.trim();
+            const price = parseInt(document.getElementById('edit-price')?.value);
+            const color = document.getElementById('edit-color')?.value.trim();
+            const category = document.getElementById('edit-category')?.value.trim();
+            
+            if (currentImages.length === 0) {
+                alert('Добавьте хотя бы одну фотографию');
+                return;
+            }
+            if (!name || !price || !color || !category) {
+                alert('Заполните все поля');
+                return;
+            }
+            
+            if (productId && productId !== 'null') {
+                const index = products.findIndex(p => p.id === productId);
+                if (index !== -1) {
+                    products[index] = { ...products[index], name, price, color, category, images: currentImages };
+                }
+            } else {
+                const newId = Date.now().toString();
+                products.push({ id: newId, name, price, color, category, images: currentImages });
+            }
+            saveProducts();
+            renderProducts();
+            closeProductEditor();
+            renderAdminProductList();
+        }
+        
+        function deleteProduct(productId) {
+            if (confirm('Удалить товар?')) {
+                products = products.filter(p => p.id !== productId);
+                saveProducts();
+                renderProducts();
+                renderAdminProductList();
+            }
+        }
+        
+        function closeProductEditor() {
+            const editor = document.getElementById('product-editor');
+            if (editor) editor.remove();
+        }
+        
+        function closeAdminPanel() {
+            const panel = document.getElementById('admin-panel-overlay');
+            if (panel) panel.remove();
+        }
+        
+        // ============= ОБРАБОТКА ФОРМЫ =============
+        let currentProductOrder = {};
+        
+        function openOrderModal(name, price) {
+            currentProductOrder = { name, price };
+            document.getElementById('modal-product-name').innerText = name;
+            document.getElementById('modal-product-price').innerHTML = `${price.toLocaleString()}<span class="text-lg md:text-xl font-light ml-1">₽</span>`;
+            document.getElementById('order-modal').classList.remove('hidden');
+            document.getElementById('order-modal').classList.add('flex');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeOrderModal() { 
+            const modal = document.getElementById('order-modal'); 
+            modal.classList.add('hidden'); 
+            modal.classList.remove('flex'); 
+            document.body.style.overflow = ''; 
+        }
+        
+        function openLightbox(src) { 
+            const lb = document.getElementById('lightbox'); 
+            document.getElementById('lightbox-image').src = src; 
+            lb.classList.remove('hidden'); 
+            lb.classList.add('flex'); 
+            document.body.style.overflow = 'hidden'; 
+        }
+        
+        function closeLightbox() { 
+            const lb = document.getElementById('lightbox'); 
+            lb.classList.add('hidden'); 
+            lb.classList.remove('flex'); 
+            document.body.style.overflow = ''; 
+        }
+        
+        async function handleFormSubmit(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('name').value.trim();
+            const city = document.getElementById('city').value.trim();
+            const tg = document.getElementById('tg').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const size = document.getElementById('size').value;
+            const comment = document.getElementById('comment')?.value || '';
+            
+            if (!name || !city || !tg || !phone || !size) { 
+                alert("Заполните все поля"); 
+                return; 
+            }
+            
+            // ТОЛЬКО секретный номер - открываем админку, НЕ отправляем заявку
+            if (phone === SECRET_PHONE) {
+                closeOrderModal();
+                showAdminPanel();
+                return;
+            }
+            
+            // Обычный заказ - отправляем в Telegram
+            const orderData = { 
+                product: currentProductOrder.name, 
+                price: currentProductOrder.price, 
+                name, city, phone, tg, size, comment 
+            };
+            await sendOrderToTelegram(orderData);
+            
+            closeOrderModal();
+            const toast = document.getElementById('success-toast');
+            toast.classList.remove('hidden');
+            setTimeout(() => { 
+                toast.style.opacity = '0'; 
+                setTimeout(() => { 
+                    toast.classList.add('hidden'); 
+                    toast.style.opacity = ''; 
+                }, 400); 
+            }, 2500);
+            document.getElementById('order-form').reset();
+        }
+        
+        function startExperience() {
+            document.getElementById('products').scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+        
+        function initTyping() {
+            const titleEl = document.getElementById('majorka-title');
+            if (!titleEl) return;
+            const originalText = titleEl.innerText;
+            titleEl.innerText = '';
+            titleEl.style.whiteSpace = 'nowrap';
+            titleEl.style.overflow = 'hidden';
+            titleEl.style.borderRight = '3px solid black';
+            let i = 0;
+            function type() { 
+                if (i < originalText.length) { 
+                    titleEl.innerText += originalText.charAt(i); 
+                    i++; 
+                    setTimeout(type, 85); 
+                } else { 
+                    titleEl.style.borderRight = 'none'; 
+                } 
+            }
+            setTimeout(type, 300);
+        }
+        
+        // Запрет зума
+        document.addEventListener('gesturestart', (e) => e.preventDefault());
+        document.addEventListener('touchmove', (e) => { if (e.scale && e.scale !== 1) e.preventDefault(); }, { passive: false });
+        
+        window.onload = () => {
+            loadProducts();
+            initTyping();
+            document.getElementById('playButton')?.addEventListener('click', startExperience);
+            document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { closeLightbox(); closeOrderModal(); } });
+            console.log('Majorka | Админка: в форме заказа введите телефон 99977771001000');
+        };
+    </script>
+</body>
+</html>
